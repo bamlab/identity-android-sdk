@@ -14,6 +14,7 @@ import co.reachfive.identity.sdk.core.ReachFive.Companion.TAG
 class RedirectionActivity : Activity() {
     companion object {
         const val FQN = "co.reachfive.identity.sdk.core.RedirectionActivity"
+        const val CDAPP = "com.cdapp.MainActivity"
         const val CODE_VERIFIER_KEY = "CODE_VERIFIER"
         const val URL_KEY = "URL"
         const val SCHEME = "SCHEME"
@@ -41,27 +42,20 @@ class RedirectionActivity : Activity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onNewIntent(newIntent: Intent) {
-        val extras = newIntent.extras;
-        Log.d(TAG, "onNewIntent - intent: $newIntent")
-        Log.d(TAG, "onNewIntent - intent: ${this.intent}")
-        Log.d(TAG, "onNewIntent - intent extras: $extras")
+        val intentClass = this.callingActivity?.className
+        val scheme = intent.getStringExtra(SCHEME) ?: "???"
+        val url = newIntent.data
 
-        // check if the originating Activity is from trusted package
-        val className = this.callingActivity?.className;
-        val packageName = this.callingActivity?.packageName;
-
-        // com.cdapp.MainActivity
-        Log.d(TAG, "onNewIntent - class: $className")
-
-        // com.lumiplan.montagne.LesArcs.staging
-        Log.d(TAG, "onNewIntent - package: $packageName")
-
-        if (className == "com.cdapp.MainActivity") {
-            newIntent.removeFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            newIntent.removeFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            setResult(RESULT_OK, newIntent)
-            finish()
+        // ensure intent target && URL belong to us
+        if (intentClass == CDAPP && url.toString().startsWith(scheme)) {
+            intent.data = url
+            setResult(Activity.RESULT_OK, intent)
+        } else {
+            Log.e(TAG, "Unrecognized intent!")
+            setResult(Activity.RESULT_CANCELED)
         }
+
+        finish()
     }
 
     override fun onResume() {
