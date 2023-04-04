@@ -42,9 +42,14 @@ class RedirectionActivity : Activity() {
         // check if the originating Activity is from trusted package
         val className = this.callingActivity?.className;
         val packageName = this.callingActivity?.packageName;
+
+        // com.cdapp.MainActivity
         Log.d(TAG, "onNewIntent - class: $className")
+
+        // com.lumiplan.montagne.LesArcs.staging
         Log.d(TAG, "onNewIntent - package: $packageName")
-        if (className == FQN) {
+
+        if (className == "com.cdapp.MainActivity") {
             // extract the nested Intent
             val forward = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 this.intent.getParcelableExtra(SCHEME, Intent::class.java) // redirect the nested Intent
