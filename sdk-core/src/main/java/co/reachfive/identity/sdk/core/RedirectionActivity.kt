@@ -38,22 +38,7 @@ class RedirectionActivity : Activity() {
         startActivity(customTabsIntent)
     }
 
-    override fun onNewIntent(newIntent: Intent) {
-        // check if the originating Activity is from trusted package
-        val packageName = this.callingActivity?.className;
-        if (packageName != null && packageName ==FQN) {
-            val newIntent = intent;
-            // extract the nested Intent
-            val forward = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                 newIntent.getParcelableExtra(SCHEME, Intent::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                newIntent.getParcelableExtra(SCHEME)
-            }
-            // redirect the nested Intent
-            this.startActivity(forward);
-        }
-    }
+    override fun onNewIntent(newIntent: Intent) {}
 
     override fun onResume() {
         super.onResume()
