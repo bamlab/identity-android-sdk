@@ -40,7 +40,9 @@ class RedirectionActivity : Activity() {
     }
 
     override fun onNewIntent(newIntent: Intent) {
+        val extras = newIntent.extras;
         Log.d(TAG, "onNewIntent - intent: $newIntent")
+        Log.d(TAG, "onNewIntent - intent extras: $extras")
 
         // check if the originating Activity is from trusted package
         val className = this.callingActivity?.className;
@@ -62,7 +64,7 @@ class RedirectionActivity : Activity() {
             }
             Log.d(TAG, "onNewIntent - redirect the nested Intent: $forward")
             if (forward != null) {
-                this.startActivity(forward);
+                setResult(Activity.RESULT_OK, forward)
             }
         }
     }
