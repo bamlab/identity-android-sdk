@@ -43,11 +43,11 @@ class RedirectionActivity : Activity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onNewIntent(newIntent: Intent) {
         val intentClass = this.callingActivity?.className
-        val scheme = intent.getStringExtra(SCHEME) ?: "???"
+        val scheme = intent.getStringExtra(SCHEME)
         val url = newIntent.data
 
         // ensure intent target && URL belong to us
-        if (intentClass == CDAPP && url.toString().startsWith(scheme)) {
+        if (intentClass == CDAPP && scheme != null && url.toString().startsWith(scheme)) {
             intent.data = url
             setResult(Activity.RESULT_OK, intent)
         } else {
