@@ -39,6 +39,7 @@ class RedirectionActivity : Activity() {
         startActivity(customTabsIntent)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onNewIntent(newIntent: Intent) {
         val extras = newIntent.extras;
         Log.d(TAG, "onNewIntent - intent: $newIntent")
@@ -55,7 +56,9 @@ class RedirectionActivity : Activity() {
         Log.d(TAG, "onNewIntent - package: $packageName")
 
         if (className == "com.cdapp.MainActivity") {
-          setResult(RESULT_OK, newIntent)
+            newIntent.removeFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            newIntent.removeFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            setResult(RESULT_OK, newIntent)
         }
     }
 
