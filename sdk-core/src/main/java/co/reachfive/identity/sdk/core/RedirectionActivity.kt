@@ -55,17 +55,7 @@ class RedirectionActivity : Activity() {
         Log.d(TAG, "onNewIntent - package: $packageName")
 
         if (className == "com.cdapp.MainActivity") {
-            // extract the nested Intent
-            val forward = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                this.intent.getParcelableExtra(SCHEME, Intent::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                this.intent.getParcelableExtra(SCHEME)
-            }
-            Log.d(TAG, "onNewIntent - redirect the nested Intent: $forward")
-            if (forward != null) {
-                setResult(Activity.RESULT_OK, forward)
-            }
+          setResult(RESULT_OK, newIntent)
         }
     }
 
