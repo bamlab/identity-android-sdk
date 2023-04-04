@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
@@ -39,6 +40,8 @@ class RedirectionActivity : Activity() {
     }
 
     override fun onNewIntent(newIntent: Intent) {
+        Log.d(TAG, "onNewIntent - intent: $newIntent")
+
         // check if the originating Activity is from trusted package
         val className = this.callingActivity?.className;
         val packageName = this.callingActivity?.packageName;
@@ -52,14 +55,15 @@ class RedirectionActivity : Activity() {
         if (className == "com.cdapp.MainActivity") {
             // extract the nested Intent
             val forward = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                this.intent.getParcelableExtra(SCHEME, Intent::class.java) // redirect the nested Intent
+                this.intent.getParcelableExtra(SCHEME, Intent::class.java)
             } else {
                 @Suppress("DEPRECATION")
                 this.intent.getParcelableExtra(SCHEME)
             }
             Log.d(TAG, "onNewIntent - redirect the nested Intent: $forward")
-
-            this.startActivity(forward);
+            if (forward != null) {
+                this.startActivity(forward);
+            }
         }
     }
 
