@@ -43,6 +43,7 @@ class RedirectionActivity : Activity() {
     override fun onNewIntent(newIntent: Intent) {
         val extras = newIntent.extras;
         Log.d(TAG, "onNewIntent - intent: $newIntent")
+        Log.d(TAG, "onNewIntent - intent: ${this.intent}")
         Log.d(TAG, "onNewIntent - intent extras: $extras")
 
         // check if the originating Activity is from trusted package
