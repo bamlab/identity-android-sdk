@@ -40,17 +40,20 @@ class RedirectionActivity : Activity() {
 
     override fun onNewIntent(newIntent: Intent) {
         // check if the originating Activity is from trusted package
-        val packageName = this.callingActivity?.className;
-        if (packageName != null && packageName ==FQN) {
-            val newIntent = intent;
+        val className = this.callingActivity?.className;
+        val packageName = this.callingActivity?.packageName;
+        Log.d(TAG, "onNewIntent - class: $className")
+        Log.d(TAG, "onNewIntent - package: $packageName")
+        if (className == FQN) {
             // extract the nested Intent
             val forward = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                 newIntent.getParcelableExtra(SCHEME, Intent::class.java)
+                this.intent.getParcelableExtra(SCHEME, Intent::class.java) // redirect the nested Intent
             } else {
                 @Suppress("DEPRECATION")
-                newIntent.getParcelableExtra(SCHEME)
+                this.intent.getParcelableExtra(SCHEME)
             }
-            // redirect the nested Intent
+            Log.d(TAG, "onNewIntent - redirect the nested Intent: $forward")
+
             this.startActivity(forward);
         }
     }
