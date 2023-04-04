@@ -3,8 +3,10 @@ package co.reachfive.identity.sdk.core
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
 import co.reachfive.identity.sdk.core.ReachFive.Companion.TAG
 
@@ -37,23 +39,20 @@ class RedirectionActivity : Activity() {
     }
 
     override fun onNewIntent(newIntent: Intent) {
-        // remove any flags from the new intent
-        newIntent.flags = 0
-
-        val intentClass = newIntent.resolveActivity(packageManager).className
-        val scheme = intent.getStringExtra(SCHEME) ?: "???"
-        val url = newIntent.data
-
-        // ensure intent target && URL belong to us
-        if (intentClass == FQN && url.toString().startsWith(scheme)) {
-            intent.data = url
-            setResult(Activity.RESULT_OK, intent)
-        } else {
-            Log.e(TAG, "Unrecognized intent!")
-            setResult(Activity.RESULT_CANCELED)
+        // check if the originating Activity is from trusted package
+        val packageName = this.callingActivity?.className;
+        if (packageName != null && packageName ==FQN) {
+            val newIntent = intent;
+            // extract the nested Intent
+            val forward = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                 newIntent.getParcelableExtra(SCHEME, Intent::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                newIntent.getParcelableExtra(SCHEME)
+            }
+            // redirect the nested Intent
+            this.startActivity(forward);
         }
-
-        finish()
     }
 
     override fun onResume() {
