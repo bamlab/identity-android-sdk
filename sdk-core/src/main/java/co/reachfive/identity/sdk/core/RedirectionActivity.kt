@@ -11,6 +11,7 @@ import co.reachfive.identity.sdk.core.ReachFive.Companion.TAG
 class RedirectionActivity : Activity() {
     companion object {
         const val FQN = "co.reachfive.identity.sdk.core.RedirectionActivity"
+        const val CDAPP = "com.cdapp.MainActivity"
         const val CODE_VERIFIER_KEY = "CODE_VERIFIER"
         const val URL_KEY = "URL"
         const val SCHEME = "SCHEME"
@@ -40,12 +41,13 @@ class RedirectionActivity : Activity() {
         // remove any flags from the new intent
         newIntent.flags = 0
 
-        val intentClass = newIntent.resolveActivity(packageManager).className
-        val scheme = intent.getStringExtra(SCHEME) ?: "???"
+        val intentClass = this.callingActivity?.className
+        Log.d(TAG, "intent: ${this.callingActivity}")
+        val scheme = intent.getStringExtra(SCHEME)
         val url = newIntent.data
 
         // ensure intent target && URL belong to us
-        if (intentClass == FQN && url.toString().startsWith(scheme)) {
+        if (intentClass == CDAPP && scheme != null && url.toString().startsWith(scheme)) {
             intent.data = url
             setResult(Activity.RESULT_OK, intent)
         } else {
