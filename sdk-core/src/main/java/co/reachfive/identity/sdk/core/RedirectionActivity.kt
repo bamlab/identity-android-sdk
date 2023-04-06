@@ -42,12 +42,15 @@ class RedirectionActivity : Activity() {
         newIntent.flags = 0
 
         val intentClass = this.callingActivity?.className
-        Log.d(TAG, "intent: ${this.callingActivity}")
+        val packageName = this.callingActivity?.packageName
         val scheme = intent.getStringExtra(SCHEME)
         val url = newIntent.data
 
+        val expectedPackageName = applicationContext.packageName
+        Log.d(TAG, "Expected package name: $expectedPackageName")
+
         // ensure intent target && URL belong to us
-        if (intentClass == CDAPP && scheme != null && url.toString().startsWith(scheme)) {
+        if (intentClass == CDAPP && packageName == "" && scheme != null && url.toString().startsWith(scheme)) {
             intent.data = url
             setResult(Activity.RESULT_OK, intent)
         } else {
