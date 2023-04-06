@@ -50,7 +50,7 @@ class RedirectionActivity : Activity() {
         Log.d(TAG, "Expected package name: $expectedPackageName")
 
         // ensure intent target && URL belong to us
-        if (intentClass == CDAPP && packageName == "" && scheme != null && url.toString().startsWith(scheme)) {
+        if (intentClass == CDAPP && packageName == expectedPackageName && scheme != null && url.toString().startsWith(scheme)) {
             intent.data = url
             setResult(Activity.RESULT_OK, intent)
         } else {
